@@ -1,0 +1,16 @@
+<template name="home">
+
+    <div id="inputDiv">
+        <input value="" placeholder="What to do?" id="todoInput">
+        <span id="add_todo">+</span>
+    </div>
+    <div id="listDiv">
+        <ul id="listUl">
+            {{#each todos}}
+            {{> todo}}
+            {{/each}}
+          
+        </ul>
+        
+    </div>
+</template>

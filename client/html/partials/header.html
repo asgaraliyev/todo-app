@@ -1,0 +1,18 @@
+<template name="header">
+    <header>
+        {{#if currentUser}}
+        <div id="nav-drawer">
+            <input id="nav-input" type="checkbox" class="nav-unshown">
+            <label id="nav-open" for="nav-input"><span></span></label>
+            <label class="nav-unshown" id="nav-close" for="nav-input"></label>
+
+            <ul id="nav-content">
+                <i class="fa fa-times" id="close" aria-hidden="true"></i>
+                <li><a href="/"><button class="offset">My Todos</button></a></li>
+                <li><a href="/profile"><button class="offset">{{currentUser.username}}</button></a></li>
+                <li><button class="offset" id="log-out">Log Out</button></li>
+            </ul>
+        </div>
+        {{/if}}
+    </header>
+</template>

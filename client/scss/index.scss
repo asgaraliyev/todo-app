@@ -1,0 +1,488 @@
+/*
+  https://developer.mozilla.org/en/docs/Web/CSS/box-shadow
+  box-shadow: [inset?] [top] [left] [blur] [size] [color];
+
+  Tips:
+    - We're setting all the blurs to 0 since we want a solid fill.
+    - Add the inset keyword so the box-shadow is on the inside of the element
+    - Animating the inset shadow on hover looks like the element is filling in from whatever side you specify ([top] and [left] accept negative values to become [bottom] and [right])
+    - Multiple shadows can be stacked
+    - If you're animating multiple shadows, be sure to keep the same number of shadows so the animation is smooth. Otherwise, you'll get something choppy.
+*/
+button {
+    cursor: pointer;
+}
+
+// Animate the size, inside
+.fill:hover,
+.fill:focus {
+    box-shadow: inset 0 0 0 2em var(--hover);
+}
+
+// Animate the size, outside
+.pulse:hover,
+.pulse:focus {
+    animation: pulse 1s;
+    box-shadow: 0 0 0 2em rgba(#fff, 0);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 var(--hover);
+    }
+}
+
+// Stack multiple shadows, one from the left, the other from the right
+.close:hover,
+.close:focus {
+    box-shadow:
+        inset -3.5em 0 0 0 var(--hover),
+        inset 3.5em 0 0 0 var(--hover);
+}
+
+// Size can also be negative; see how it's smaller than the element
+.raise:hover,
+.raise:focus {
+    box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+    transform: translateY(-0.25em);
+}
+
+// Animating from the bottom
+.up:hover,
+.up:focus {
+    box-shadow: inset 0 -3.25em 0 0 var(--hover);
+}
+
+// And from the left
+.slide:hover,
+.slide:focus {
+    box-shadow: inset 6.5em 0 0 0 var(--hover);
+}
+
+// Multiple shadows, one on the outside, another on the inside
+.offset {
+    box-shadow:
+        0.3em 0.3em 0 0 var(--color),
+        inset 0.3em 0.3em 0 0 var(--color);
+
+    &:hover,
+    &:focus {
+        box-shadow:
+            0 0 0 0 var(--hover),
+            inset 6em 3.5em 0 0 var(--hover);
+    }
+}
+
+//=== Set button colors
+// If you wonder why use Sass vars or CSS custom properties...
+// Make a map with the class names and matching colors
+$colors: (fill: #a972cb,
+    pulse: #ef6eae,
+    close: #ff7f82,
+    raise: #ffa260,
+    up: #e4cb58,
+    slide: #8fc866,
+    offset: #19bc8b);
+
+// Sass variables compile to a static string; CSS variables are dynamic and inherited
+// Loop through the map and set CSS custom properties using Sass variables
+@each $button,
+$color in $colors {
+    .#{$button} {
+        --color: #{$color};
+        --hover: #{adjust-hue($color, 45deg)};
+    }
+}
+
+// Now every button will have different colors as set above. We get to use the same structure, only changing the custom properties.
+button {
+    color: var(--color);
+    transition: 0.25s;
+
+    &:hover,
+    &:focus {
+        border-color: var(--hover);
+        color: #fff;
+    }
+}
+
+
+
+
+// Basic button styles
+button {
+    background: none;
+    border: 2px solid;
+    font: inherit;
+    line-height: 1;
+    margin: 0.5em;
+    padding: 1em 2em;
+}
+
+h1 {
+    font-weight: 400;
+}
+
+code {
+    color: #e4cb58;
+    font: inherit;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+input {
+    &:focus {
+        outline: none;
+    }
+}
+
+body {
+    background: #17171f;
+    font-family: courier;
+
+    h1 {
+        color: #fff;
+        text-align: center;
+        font-size: 40px;
+    }
+
+    #inputDiv {
+        text-align: center;
+
+        #todoInput {
+            font-size: 30px;
+            width: 80%;
+            border: none;
+            font-family: courier;
+            font-weight: bold;
+            background: #000;
+            box-shadow: 0 0 4px #000;
+            color: #fff;
+
+            &:focus {
+                box-shadow: 0 0 8px #000;
+            }
+
+            &::placeholder {
+                color: #fff;
+            }
+        }
+
+        #add_todo {
+            font-size: 30px;
+            font-weight: bold;
+            background: #000;
+            padding-left: 5px;
+            padding-right: 5px;
+            cursor: pointer;
+            box-shadow: 0 0 4px #000;
+            color: #fff;
+
+            &:hover {
+                box-shadow: 0 0 8px #000;
+            }
+        }
+    }
+
+    #listDiv {
+        position: relative;
+        width: 80%;
+        transform: translateX(-55%);
+        left: 50%;
+
+        li {
+            position: relative;
+
+            .edit-form {
+
+                textarea {
+                    background: transparent;
+                    color: white;
+                    outline: none;
+                    border: none;
+                    font-size: 1.5em;
+                    width: 100%;
+                    padding-right: 1em;
+                }
+                button {
+                    position: absolute;
+                    top: -20px;
+                    left: 0;
+                    background: orange;
+                    color:black;
+                    padding:0.5em 2em;
+                    animation: slide-bottom 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+                }
+            }
+
+            .right-top {
+                position: absolute;
+                /* right: 0; */
+                display: flex;
+                flex-direction: column;
+                left: 100%;
+                top: 0;
+            }
+        }
+
+
+        span {
+            float: right;
+            margin: 0.1em 0;
+            cursor: pointer;
+            background: #f00;
+            text-align: center;
+            padding: 10px;
+            transform: translate(-50%, -25%);
+            -ms-transform: translate(-50%, -25%);
+
+            &:hover {
+                box-shadow: 0 0 8px #f00;
+            }
+        }
+
+        .done {
+            background: #42ba96;
+        }
+
+        .edit {
+            background: orange;
+        }
+
+        ul {
+            list-style: none;
+
+            li {
+                color: #fff;
+                background: #000;
+                padding: 20px;
+                margin-top: 37px;
+                box-shadow: 0 0 4px #000;
+                height: 109px;
+
+              
+            }
+
+            @for $i from 1 through 100 {
+                li:nth-child(#{$i}) {
+                    animation: slide-bottom $i*0.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+                }
+            }
+
+
+            .finished {
+                background-color: #0000000d;
+
+                &:before {
+                    content: "✅";
+                    position: absolute;
+                    top: -14px;
+                    left: -20px;
+                    font-size: 2em;
+                }
+            }
+        }
+
+    }
+}
+
+
+.stricked {
+    text-decoration: line-through;
+}
+
+#sign-up,
+#login {
+    .box {
+        width: 300px;
+        padding: 40px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+
+        a {
+            color: #3498db;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+
+    .box h1 {
+        color: white;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .box input[type="text"],
+    .box input[type="password"],
+    .box input[type="email"] {
+        border: 0;
+        background: none;
+        display: block;
+        margin: 20px auto;
+        text-align: center;
+        border: 2px solid #3498db;
+        padding: 14px 10px;
+        width: 200px;
+        outline: none;
+        color: white;
+        border-radius: 24px;
+        transition: 0.25s;
+    }
+
+    .box input[type="text"]:focus,
+    .box input[type="password"]:focus {
+        width: 280px;
+        border-color: #2ecc71;
+    }
+
+    .box input[type="submit"] {
+        border: 0;
+        background: none;
+        display: block;
+        margin: 20px auto;
+        text-align: center;
+        border: 2px solid #2ecc71;
+        padding: 14px 40px;
+        outline: none;
+        color: white;
+        border-radius: 24px;
+        transition: 0.25s;
+        cursor: pointer;
+    }
+
+    .box input[type="submit"]:hover {
+        background: #2ecc71;
+    }
+}
+
+/*ヘッダーまわりはご自由に*/
+header {
+    padding: 10px;
+}
+
+#nav-drawer {
+    position: relative;
+}
+
+/*チェックボックス等は非表示に*/
+.nav-unshown {
+    display: none;
+}
+
+/*アイコンのスペース*/
+#nav-open {
+    display: inline-block;
+    width: 30px;
+    height: 22px;
+    vertical-align: middle;
+}
+
+/*ハンバーガーアイコンをCSSだけで表現*/
+#nav-open span,
+#nav-open span:before,
+#nav-open span:after {
+    position: absolute;
+    height: 3px;
+    /*線の太さ*/
+    width: 25px;
+    /*長さ*/
+    border-radius: 3px;
+    background: white;
+    display: block;
+    content: '';
+    cursor: pointer;
+}
+
+#nav-open span:before {
+    bottom: -8px;
+}
+
+#nav-open span:after {
+    bottom: -16px;
+}
+
+/*閉じる用の薄黒カバー*/
+#nav-close {
+    display: none;
+    /*はじめは隠しておく*/
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    /*全体に広がるように*/
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0;
+    transition: .3s ease-in-out;
+}
+
+/*中身*/
+#nav-content {
+    overflow: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 90%;
+    max-width: 330px;
+    height: 100%;
+    background: #fff;
+    transition: .3s ease-in-out;
+    -webkit-transform: translateX(-105%);
+    transform: translateX(-105%);
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    #close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 3em;
+        margin: 0.3em;
+        color: #2ecc71;
+    }
+
+    li {
+        list-style: none;
+    }
+}
+
+#nav-input:checked~#nav-close {
+    display: block;
+    /*カバーを表示*/
+    opacity: .5;
+}
+
+#nav-input:checked~#nav-content {
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
+    /*中身を表示*/
+    box-shadow: 6px 0 25px rgba(0, 0, 0, .15);
+}
+
+
+
+
+@keyframes slide-bottom {
+    0% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+
+    100% {
+        -webkit-transform: translateY(100px);
+        transform: translateY(100px);
+    }
+}
